@@ -18,9 +18,9 @@ based on a `foo` property.
 export default Ember.Object.extend({
   foo: 'bar',
 
-  computedFoo: function() {
+  computedFoo: Ember.computed('foo', function() {
     return 'computed ' + this.get('foo');
-  }.property('foo')
+  })
 });
 ```
 

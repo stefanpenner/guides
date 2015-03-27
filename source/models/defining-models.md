@@ -70,9 +70,9 @@ export default DS.Model.extend({
   firstName: attr(),
   lastName: attr(),
 
-  fullName: function() {
+  fullName: Ember.computed('firstName', 'lastName', function() {
     return this.get('firstName') + ' ' + this.get('lastName');
-  }.property('firstName', 'lastName')
+  })
 });
 ```
 

@@ -8,12 +8,12 @@ Person = Ember.Object.extend({
   firstName: null,
   lastName: null,
   
-  fullName: function() {
+  fullName: Ember.computed('firstName', 'lastName', function() {
     var firstName = this.get('firstName');
     var lastName = this.get('lastName');
 
     return firstName + ' ' + lastName;
-  }.property('firstName', 'lastName'),
+  }),
 
   fullNameChanged: function() {
     // deal with the change

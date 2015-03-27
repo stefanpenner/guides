@@ -114,9 +114,9 @@ Suppose we have an object that has a property and a method observing that proper
 export default Ember.Object.extend({
   foo: 'bar',
   other: 'no',
-  doSomething: function(){
+  doSomething: Ember.observer('foo', function(){
     this.set('other', 'yes');
-  }.observes('foo')
+  })
 });
 ```
 

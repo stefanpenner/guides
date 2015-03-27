@@ -27,6 +27,9 @@ of the interval. Since the `tick` method observes the incremented property
 another interval is triggered each time the property increases.
 
 ```app/services/clock.js
+var observer = Ember.observer;
+var on = Ember.on;
+
 export default Ember.Object.extend({
   init: function() {
     this._super.apply(this, arguments);
@@ -34,7 +37,7 @@ export default Ember.Object.extend({
   },
 
   pulse: Ember.computed.oneWay('_seconds').readOnly(),
-  tick: Ember.observer('_seconds', function () {
+  tick: on(observer('_seconds', function () {
     var clock = this;
     Ember.run.later(function () {
       var seconds = clock.get('_seconds');
@@ -42,7 +45,7 @@ export default Ember.Object.extend({
         clock.set('_seconds', seconds + (1/4));
       }
     }, 250);
-  }).on('init')
+  }), 'init')
 });
 ```
 
@@ -96,7 +99,7 @@ comment was created.
 
 ```app/controllers/comment-item.js
 export default Ember.ObjectController.extend({
-    seconds: Ember.computed.oneWay('clock.pulse').readOnly()
+  seconds: Ember.computed.oneWay('clock.pulse').readOnly()
 });
 ```
 
@@ -104,18 +107,18 @@ export default Ember.ObjectController.extend({
 import ClockService from '../services/clock';
 
 export default Ember.ArrayController.extend({
-    itemController: 'commentItem',
-    comment: null,
-    actions: {
-      add: function () {
-        this.addObject(Em.Object.create({
-          comment: this.get('comment'),
-          clock: ClockService.create()
-        }));
-        this.set('comment', null);
-      }
+  itemController: 'commentItem',
+  comment: null,
+  actions: {
+    add: function () {
+      this.addObject(Em.Object.create({
+        comment: this.get('comment'),
+        clock: ClockService.create()
+      }));
+      this.set('comment', null);
     }
-  });
+  }
+});
 ```
 
 ### Handlebars template which displays the `pulse`

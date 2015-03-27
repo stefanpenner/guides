@@ -3,21 +3,25 @@ You can set up an observer on an object by using the `observes`
 method on a function:
 
 ```javascript
+var computed = Ember.computed;
+var observer = Ember.observer;
+var on = Ember.on;
+
 Person = Ember.Object.extend({
   // these will be supplied by `create`
   firstName: null,
   lastName: null,
   
-  fullName: Ember.computed('firstName', 'lastName', function() {
+  fullName: computed('firstName', 'lastName', function() {
     var firstName = this.get('firstName');
     var lastName = this.get('lastName');
 
     return firstName + ' ' + lastName;
   }),
 
-  fullNameChanged: Ember.observer(function() {
+  fullNameChanged: on('init', observer('fullName', function() {
     // deal with the change
-  }).on('init')
+  }))
 });
 
 var person = Person.create({
@@ -90,17 +94,21 @@ Observers never fire until after the initialization of an object is complete.
 
 If you need an observer to fire as part of the initialization process, you
 cannot rely on the side effect of set. Instead, specify that the observer
-should also run after init by using `.on('init')`:
+should also run after init by using `Ember.on('init')`:
 
 ```javascript
+var observer = Ember.observer;
+var on = Ember.on;
+
 Person = Ember.Object.extend({
   init: function() {
+    this._super.apply(this, arguments);
     this.set('salutation', "Mr/Ms");
   },
 
-  salutationDidChange: Ember.observer('salutation', function() {
+  salutationDidChange: on('init', observer('salutation', function() {
     // some side effect of salutation changing
-  }).on('init')
+  }))
 });
 ```
 
